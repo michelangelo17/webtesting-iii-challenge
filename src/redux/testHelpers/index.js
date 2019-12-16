@@ -4,12 +4,17 @@ import { createStore } from '@reduxjs/toolkit'
 import rootReducer from '../slice/index'
 import { render } from '@testing-library/react'
 
-export function renderWithRedux(
+export const renderWithRedux = (
   ui,
   { initialState, store = createStore(rootReducer, initialState) } = {}
-) {
+) => {
+  const rendered = render(
+    <Provider store={store}>{ui}</Provider>,
+    ({ initialState, store = createStore(rootReducer, initialState) } = {})
+  )
   return {
-    ...render(<Provider store={store}>{ui}</Provider>),
-    store,
+    ...rendered,
+    rerender: (ui, options) =>
+      renderWithRedux(ui, { container: rendered.container, ...options }),
   }
 }

@@ -3,46 +3,29 @@ import '@testing-library/jest-dom/extend-expect'
 import Display from './Display'
 import { renderWithRedux } from '../redux/testHelpers'
 
-test('should display open if gate state is open with class green-led', () => {
-  const { getByText } = renderWithRedux(<Display />, {
+test('should display with the right text and class based on state', () => {
+  // set display with intialState of open and unlocked
+  const { getByText, rerender } = renderWithRedux(<Display />, {
     initialState: {
       closed: false,
-    },
-  })
-  const openDisplay = getByText(/open/i)
-  expect(openDisplay).toBeInTheDocument()
-  expect(openDisplay).toHaveClass('green-led')
-})
-
-test('should display closed if gate state is closed with class red-led', () => {
-  const { getByText } = renderWithRedux(<Display />, {
-    initialState: {
-      closed: true,
-    },
-  })
-  const closedDisplay = getByText(/closed/i)
-  expect(closedDisplay).toBeInTheDocument()
-  expect(closedDisplay).toHaveClass('red-led')
-})
-
-test('should display locked if gate state is locked with class red-led', () => {
-  const { getByText } = renderWithRedux(<Display />, {
-    initialState: {
-      locked: true,
-    },
-  })
-  const lockedDisplay = getByText(/locked/i)
-  expect(lockedDisplay).toBeInTheDocument()
-  expect(lockedDisplay).toHaveClass('red-led')
-})
-
-test('should display unlocked if gate state is unlocked with class green-led', () => {
-  const { getByText } = renderWithRedux(<Display />, {
-    initialState: {
       locked: false,
     },
   })
+  const openDisplay = getByText(/open/i)
   const unlockedDisplay = getByText(/unlocked/i)
-  expect(unlockedDisplay).toBeInTheDocument()
+  expect(openDisplay).toHaveClass('green-led')
   expect(unlockedDisplay).toHaveClass('green-led')
+
+  // set display with intialState of open and unlocked
+  rerender(<Display />, {
+    initialState: {
+      closed: true,
+      locked: true,
+    },
+  })
+  const closedDisplay = getByText(/closed/i)
+  const lockedDisplay = getByText(/^locked$/i)
+  expect(closedDisplay).toHaveClass('red-led')
+  expect(lockedDisplay).toHaveClass('red-led')
 })
+
