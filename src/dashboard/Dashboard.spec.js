@@ -4,13 +4,11 @@ import '@testing-library/jest-dom/extend-expect'
 import Dashboard from './Dashboard'
 
 test('dashboard renders display and control components', () => {
-  const { getAllByTestId, getByTestId } = render(<Dashboard />)
+  const { getAllByTestId } = render(<Dashboard />)
   const displays = getAllByTestId('display')
-  const lockUnlockButton = getByTestId('lockUnlock')
-  const openCloseButton = getByTestId('openClose')
+  const controls = getAllByTestId('control')
   expect(displays.length).toBe(2)
-  expect(lockUnlockButton).toBeInTheDocument()
-  expect(openCloseButton).toBeInTheDocument()
+  expect(controls.length).toBe(2)
 })
 
 test('state defaults to locked false and closed false', () => {

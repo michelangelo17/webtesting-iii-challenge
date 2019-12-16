@@ -3,29 +3,26 @@ import { render } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import Controls from './Controls'
 
-const fakeToggleLocked = jest.fn()
-const FaketoggleClosed = jest.fn()
-
-test('when gate locked and closed open/close button disabled and lock/unlock button enabled', () => {
-  const { getByTestId } = render(<Controls locked={true} closed={true} />)
-  const lockUnlockButton = getByTestId('lockUnlock')
-  const openCloseButton = getByTestId('openClose')
-  expect(lockUnlockButton).not.toBeDisabled()
-  expect(openCloseButton).toBeDisabled()
+test('when gate locked and closed open button disabled and unlock button enabled', () => {
+  const { getByText } = render(<Controls locked={true} closed={true} />)
+  const unlockButton = getByText(/unlock/i)
+  const openButton = getByText(/open/i)
+  expect(unlockButton).not.toBeDisabled()
+  expect(openButton).toBeDisabled()
 })
 
-test('when gate unlocked and closed both buttons enabled', () => {
-  const { getByTestId } = render(<Controls locked={false} closed={true} />)
-  const lockUnlockButton = getByTestId('lockUnlock')
-  const openCloseButton = getByTestId('openClose')
-  expect(lockUnlockButton).not.toBeDisabled()
-  expect(openCloseButton).not.toBeDisabled()
+test('when gate unlocked and closed lock and open buttons enabled', () => {
+  const { getByText } = render(<Controls locked={false} closed={true} />)
+  const lockButton = getByText(/lock/i)
+  const openButton = getByText(/open/i)
+  expect(lockButton).not.toBeDisabled()
+  expect(openButton).not.toBeDisabled()
 })
 
-test('when gate opened open/close button enabled and lock/unlock button disabled', () => {
-  const { getByTestId } = render(<Controls locked={false} closed={false} />)
-  const lockUnlockButton = getByTestId('lockUnlock')
-  const openCloseButton = getByTestId('openClose')
-  expect(lockUnlockButton).toBeDisabled()
-  expect(openCloseButton).not.toBeDisabled()
+test('when gate open close button enabled and lock button disabled', () => {
+  const { getByText } = render(<Controls locked={false} closed={false} />)
+  const lockButton = getByText(/lock/i)
+  const closeButton = getByText(/close/i)
+  expect(lockButton).toBeDisabled()
+  expect(closeButton).not.toBeDisabled()
 })
