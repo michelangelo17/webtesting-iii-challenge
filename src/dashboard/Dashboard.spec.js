@@ -1,20 +1,48 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import Dashboard from './Dashboard'
 
 test('dashboard renders display and control components', () => {
-  const { getAllByTestId } = render(<Dashboard />)
+  const { getAllByTestId, getByTestId } = render(<Dashboard />)
   const displays = getAllByTestId('display')
-  const controls = getAllByTestId('control')
+  const lockUnlockButton = getByTestId('lockUnlock')
+  const openCloseButton = getByTestId('openClose')
   expect(displays.length).toBe(2)
-  expect(controls.length).toBe(2)
+  expect(lockUnlockButton).toBeInTheDocument()
+  expect(openCloseButton).toBeInTheDocument()
 })
+
 
 test('state defaults to locked false and closed false', () => {
   const { getByText } = render(<Dashboard />)
   const gateUnlocked = getByText(/unlocked/i)
   const gateOpen = getByText(/open/i)
+  // check that it's the display not the open gate button
+  expect(gateOpen).toHaveClass('led')
   expect(gateUnlocked).toBeInTheDocument()
-  expect(gateOpen).toBeInTheDocument()
+})
+
+test('clicking buttons changes app state', () => {
+  const {getByTestId, getByText} = render(<Dashboard />)
+  const openDisplay = getByText(/open/i)
+  const unlockedDisplay = getByText(/unlocked/i)
+  const lockUnlockButton = getByTestId('lockUnlock')
+  const openCloseButton = getByTestId('openClose')
+
+  //initial state
+  expect(openDisplay).toHaveClass('green-led') 
+  expect(unlockedDisplay).toHaveClass('green-led')
+  expect(lockUnlockButton).toHaveTextContent(/lock gate/i)
+  expect(openCloseButton).toHaveTextContent(/close gate/i)
+  
+  //button presses
+  fireEvent.click(openCloseButton)
+  fireEvent.click(lockUnlockButton)
+
+  //changed state
+  expect(openDisplay).toHaveClass('red-led') 
+  expect(unlockedDisplay).toHaveClass('red-led')
+  expect(lockUnlockButton).toHaveTextContent(/unlock gate/i)
+  expect(openCloseButton).toHaveTextContent(/open gate/i)
 })
